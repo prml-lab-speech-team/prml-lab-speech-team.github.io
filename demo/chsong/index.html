@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<br lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>INDIVIDUAL PROSODY CONTROL USING GENERATED DURATION AND INTONATION VIA MEL SPECTROGRAM DEFORMATION</title>
+    <link href="static/bootstrap-4.1.3-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    </head>
+    <body>
+        </br>
+        <div align="left">
+          <img src="static/images/01_korea_logo.png" width="300">
+        </div>
+        </br>
+
+        <!--<div class="p-3">-->
+        <header>
+          <h1 align="left">INDIVIDUAL PROSODY CONTROL USING GENERATED DURATION AND INTONATION VIA MEL SPECTROGRAM DEFORMATION</h1>
+            <h4 align="left"><b>Authors :</b> Chan-Ho Song, Sang-Hoon Lee, Hyun-Wook Yoon, Hyeong-Rae Noh, and Seong-Whan Lee</h4>
+            <p><font size="4"><b>Abstract : </b></font>In speech and signal processing, it is very important to control the prosody for various speech synthesis. However, as the prosody is mixed with various features, it is difficult to control the individual prosody. Disentangling various features allows individual control without affecting other features. In this paper, we propose an individual prosody control architecture which consists of domain adversarial neural network (DANN) and conditional variational autoencoder (CVAE). We apply data augmentation which randomly warps the duration and local pitch of the mel spectrogram to deform the speaker’s unique prosody. We utilize the difference between original and deformed mel spectrograms to represent the disentangled voice and prosody features. We can control the prosody and synthesize the various duration and intonation speeches using only monotonic speech data without high-quality data. We evaluate disentangling features and individual prosody control of synthesized speech through t-SNE and comparison of F0 tracks.</p>
+          <!--<h3 align="center">Korea University PRML Lab</h3>-->
+        </header>
+        </br>
+        <!--</div>-->
+
+        <h3 class="toc_title" id="contents">Contents</h3>
+        <div id="toc_container">
+          <ul>
+            <li><a href="#sec1">1. Example of Mel Spectrogram Deformation (Korean)</a></li>
+            <li><a href="#sec2">2. Prosody Control (Korean)</a></li>
+          </ul>
+          <h5>Result : <a href="https://github.com/prml-lab-speech-team/demo">[Link]</a></h5>
+        </div>
+
+        <!-- Section1 -->
+        <br>
+        <div>
+          <a id="sec1"><h3 style="display:inline">1. Example of Mel Spectrogram Deformation (Korean)</h3> &nbsp<a href="#contents">&ltTop&gt</a></a>
+
+          <br><br>
+           <!-- <p><b> Sentence :</b> 안녕하세요 모두들 반갑습니다.</p>-->
+          <table cellpadding="15">
+            <tbody>
+            <!-- fv01 -->
+            <tr>
+            <td align="left" valign="center" style="padding-right:30px; font-size:20px;"><b>Time-axis deformation</b></td>
+            </tr>
+            
+            <tr>
+              <td align="left" valign="center" style="padding-right:10px"><b>Korean sentence <br>(English pronounciation)</b><img width="400" /></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>Original</b></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>baseline (global warping)</b></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>proposed (local random warping)</b></td>
+            </tr>
+                
+            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = -0.5</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.5, 0.5]</i></td>
+            </tr>              
+            <tr>
+                <td style="padding-right:50px; font-size:13px;"><i>아이들은 들불놀이를 하고 돌아갈 때에는 으레 이 너구리굴에다 불을 지폈다.<br>(aideul-eun deulbulnol-ileul hago dol-agal ttaeeneun eule i neoguligul-eda bul-eul jipyeossda.)</i></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/0.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/-0.5.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/0.5.wav"></audio></td>
+            </tr>
+                
+                <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = -0.4</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.5, 0.5]</i></td>
+            </tr>                    
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/-0.4.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/2/0.5.wav"></audio></td>
+            </tr>
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = -0.3</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.4, 0.4]</i></td>
+            </tr>        
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/-0.3.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/0.4.wav"></audio></td>
+            </tr>   
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = -0.2</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.4, 0.4]</i></td>
+            </tr>        
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/-0.2.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/2/0.4.wav"></audio></td>
+            </tr>    
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = 0.2</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.3, 0.3]</i></td>
+            </tr>        
+               <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/0.2.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/0.3.wav"></audio></td>
+            </tr>              
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = 0.3</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.3, 0.3]</i></td>
+            </tr>        
+               <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/0.3.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/2/0.3.wav"></audio></td>
+            </tr>              
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = 0.4</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.2, 0.2]</i></td>
+            </tr>        
+                <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/0.4.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/0.2.wav"></audio></td>
+            </tr>             
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = 0.5</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>w = random selected in [-0.2, 0.2]</i></td>
+            </tr>        
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_global/0.5.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Time_local/2/0.2.wav"></audio></td>
+            </tr>                 
+                
+                
+                
+                
+    
+<tr>
+            <td align="left" valign="center" style="padding-right:30px; font-size:20px;"><b>Frequency-axis deformation</b></td>
+            </tr>
+            
+            <tr>
+              <td align="left" valign="center" style="padding-right:10px"><b>Korean sentence <br>(English pronounciation)</b><img width="400" /></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>Original</b></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>baseline (global warping)</b></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>proposed (local random warping)</b></td>
+            </tr>
+                
+            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = -5</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-5, 5]</i></td>
+            </tr>              
+            <tr>
+                <td style="padding-right:50px; font-size:13px;"><i>이런 날일수록 산에는 안개가 짙고, 산발치 초가집 삭정이 울타리에는 빨래가 유난히도 희었다.<br>(ileon nal-ilsulog san-eneun angaega jitgo, sanbalchi chogajib sagjeong-i ultalieneun ppallaega yunanhido huieossda.)</i></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/0.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/-5.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/5.wav"></audio></td>
+            </tr>
+                
+                <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = -4</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-5, 5]</i></td>
+            </tr>                    
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/-4.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/2/5.wav"></audio></td>
+            </tr>
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = -3</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-4, 4]</i></td>
+            </tr>        
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/-3.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/4.wav"></audio></td>
+            </tr>   
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = -2</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-4, 4]</i></td>
+            </tr>        
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/-2.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/2/4.wav"></audio></td>
+            </tr>    
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = 2</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-3, 3]</i></td>
+            </tr>        
+               <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/2.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/3.wav"></audio></td>
+            </tr>              
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = 3</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-3, 3]</i></td>
+            </tr>        
+               <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/3.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/2/3.wav"></audio></td>
+            </tr>              
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = 4</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-2, 2]</i></td>
+            </tr>        
+                <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/4.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/2.wav"></audio></td>
+            </tr>             
+                
+                            <tr>
+               <td align="left" style="padding-right:50px"></td>
+              <td align="center" style="padding-right:30px"></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = 5</i></td>
+              <td align="center" style="padding-right:30px; font-size:13px;"><i>v = random selected in [-2, 2]</i></td>
+            </tr>        
+            <tr>
+                <td align="center" style="padding-right:30px">
+                    <td align="center" style="padding-right:30px">
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_global/5.wav"></audio></td>
+              <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Augment/Freq_local/2/2.wav"></audio></td>
+            </tr>                   
+                
+                
+                
+                
+                
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section2 -->
+        <br>
+        <div>
+          <a id="sec2"><h3 style="display:inline">2. Prosody Control (Korean)</h3> &nbsp<a href="#contents">&ltTop&gt</a></a>
+
+          <br><br>
+           <!-- <p><b> Sentence :</b> 안녕하세요 모두들 반갑습니다.</p>-->
+          <table cellpadding="15">
+            <tbody>
+            <tr>
+              <td align="left" valign="center" style="padding-right:10px"><b>Reference sentence<br>(English pronounciation)</b><img width="400" /></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>Reference audio</b></td>
+              <td align="center" valign="center" style="padding-right:10px"><b>Input sentence <br>(English pronounciation)</b><img width="400" /></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>Synthesized (Condition label=original)</b></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>Synthesized (time)</b></td>
+              <td align="center" valign="center" style="padding-right:30px"><b>Synthesized (frequency)</b></td>
+            </tr>
+
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>한참 가다 보니 수풀 속에서 토끼가 휙하니 지나가는 거여요.<br>(hancham gada boni supul sog-eseo tokkiga hwighani jinaganeun geoyeoyo.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/fv01/fv01_t09_s20.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>아직도 서름서름한 사인데 너무 과하지 않았을까 하고 마음이 섬찟해졌다.<br>(ajigdo seoleumseoleumhan sainde neomu gwahaji anh-ass-eulkka hago ma-eum-i seomjjishaejyeossda.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv01/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv01/aug1_lv-3.0.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv01/aug2_lv1.wav"></audio></td>
+            </tr>
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>망연자실 서 있는 우리 네 사람 곁에 이번에는 경찰차가 멈추어 섰다.<br>(mang-yeonjasil seo issneun uli ne salam gyeot-e ibeon-eneun gyeongchalchaga meomchueo seossda.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/fv02/fv02_t16_s22.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>해가 서쪽으로 한 발쯤만 기울면 아이들은 소를 앞세우고 밤밭골로 모여들었다.<br>(haega seojjog-eulo han baljjeumman giulmyeon aideul-eun soleul apse-ugo bambatgollo moyeodeul-eossda.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv02/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv02/aug1_lv2.0.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv02/aug2_lv1.wav"></audio></td>
+            </tr>
+            
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>아, 그러세요? 그런데 등에 진 가방은 뭡니까? 하고 토끼가 자라를 보며 신기한 듯 물었어요.<br>(a, geuleoseyo? geuleonde deung-e jin gabang-eun mwobnikka? hago tokkiga jalaleul bomyeo singihan deus mul-eoss-eoyo.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/fv03/fv03_t09_s23.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>집으로 갈 버스비조차 없어 쩔쩔매고 있는데 아주머니가 물었다.<br>(jib-eulo gal beoseubijocha eobs-eo jjeoljjeolmaego issneunde ajumeoniga mul-eossda.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv03/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv03/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fv03/aug2_lv1.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>똑같은 쌀, 똑같은 솥으로 밥을 지어 먹었는데 어째서 한국 사람만이 숭늉을 만들어 마셨을까?<br>(ttoggat-eun ssal, ttoggat-eun sot-eulo bab-eul jieo meog-eossneunde eojjaeseo hangug salamman-i sungnyung-eul mandeul-eo masyeoss-eulkka?)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/fx01/fx01_t17_s08.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>소리도 없이 미끄러져 내려가는 물을 가만히 내려다보고 있으면, 절로 이뿌리가 시린 것이다.<br>(solido eobs-i mikkeuleojyeo naelyeoganeun mul-eul gamanhi naelyeodabogo iss-eumyeon, jeollo ippuliga silin geos-ida.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fx01/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fx01/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fx01/aug2_lv1.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>가령, 사람이 월세계에 가서 살려고 그 방법을 연구하고 있다고 하자.<br>(galyeong, salam-i wolsegyee gaseo sallyeogo geu bangbeob-eul yeonguhago issdago haja.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/fx02/fx02_t06_s22.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>주정꾼 욕지거리에 섞여 계집의 앙칼진 목소리가 찢어졌다.<br>(jujeongkkun yogjigeolie seokk-yeo gyejib-ui angkaljin mogsoliga jjij-eojyeossda.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fx02/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fx02/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/fx02/aug2_lv2.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>죽는 줄만 알았던 토끼는 보석까지 얻게 되자 기분이 너무 좋았어요.<br>(jugneun julman al-assdeon tokkineun boseogkkaji eodge doeja gibun-i neomu joh-ass-eoyo.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/mv01/mv01_t09_s51.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>토끼가 용궁에 도착하자마자 용왕님의 신하가 나타나 토끼를 밧줄로 꽁꽁 묶었어요.<br>(tokkiga yong-gung-e dochaghajamaja yong-wangnim-ui sinhaga natana tokkileul basjullo kkongkkong mukk-eoss-eoyo.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv01/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv01/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv01/aug2_lv-2.0.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>덜어 달라고 조르면 그때만큼은 또 손이 어찌나 작으신지 덜어 낸 표도 나지 않는다.<br>(deol-eo dallago joleumyeon geuttaemankeum-eun tto son-i eojjina jag-eusinji deol-eo naen pyodo naji anhneunda.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/mv02/mv02_t15_s03.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>이것도 모르고 오누이는 오시지 않는 어머니를 기다리고 있었습니다.<br>(igeosdo moleugo onu-ineun osiji anhneun eomeonileul gidaligo iss-eossseubnida.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv02/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv02/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv02/aug2_lv1.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>신하들은 좋다는 약은 다 써보았지만 용왕님의 병을 낫게 하지는 못했어요.<br>(sinhadeul-eun johdaneun yag-eun da sseoboassjiman yong-wangnim-ui byeong-eul nasge hajineun moshaess-eoyo.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/mv03/mv03_t09_s04.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>어떤 경우에는, 역사와 구분이 안 될 정도로 실제로 있었던 일을 그대로 옮긴 것 같은 느낌을 주기도 한다.<br>(eotteon gyeong-ueneun, yeogsawa gubun-i an doel jeongdolo siljelo iss-eossdeon il-eul geudaelo olmgin geos gat-eun neukkim-eul jugido handa.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv03/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv03/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mv03/aug2_lv2.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>그리고 머지않아 한 가정을, 지붕 밑의 온도를 형성할 것이다.<br>(geuligo meojianh-a han gajeong-eul, jibung mit-ui ondoleul hyeongseonghal geos-ida.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/mw01/mw01_t03_s57.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>좀 더 깨끗이 만들어 놓고 서로 즐겁게 보낼 수도 있을 텐데.<br>(jom deo kkaekkeus-i mandeul-eo nohgo seolo jeulgeobge bonael sudo iss-eul tende.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mw01/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mw01/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mw01/aug2_lv-1.0.wav"></audio></td>
+            </tr>    
+                
+            <tr>
+                <td style="padding-right:30px; font-size:13px;"><i>나무꾼은 사슴이 일러 준 대로 날개옷 한 벌을 감추어 버리고 숲 속에 숨어서 기다렸어요.<br>(namukkun-eun saseum-i illeo jun daelo nalgaeos han beol-eul gamchueo beoligo sup sog-e sum-eoseo gidalyeoss-eoyo.)</i></td>
+                <td align="center" style="padding-right:30px"><audio controls=""><source src="static/Demo/mw02/mw02_t10_s39.wav"></audio></td>
+                <td style="padding-right:30px; font-size:13px;"><i>올라 갈 시간이 되자 날개옷을 잃어버린 선녀를 남겨 두고 선녀들은 한 사람씩 하늘로 날아가 버렸어요.<br>(olla gal sigan-i doeja nalgaeos-eul ilh-eobeolin seonnyeoleul namgyeo dugo seonnyeodeul-eun han salamssig haneullo nal-aga beolyeoss-eoyo.)</i></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mw02/aug0_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mw02/aug1_lv1.wav"></audio></td>
+                <td align="center" style="padding-right:15px"><audio controls=""><source src="static/Demo/mw02/aug2_lv-2.0.wav"></audio></td>
+            </tr>    
+                
+             
+            </tbody>
+          </table>
+        </div>
+
+      <script src="static/jquery/jquery-3.3.1.min.js"></script>
+      <script src="static/bootstrap-4.1.3-dist/js/bootstrap.js"></script>
+
+    </body>
+</html>
