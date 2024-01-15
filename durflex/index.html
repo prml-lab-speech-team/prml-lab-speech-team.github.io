@@ -40,15 +40,15 @@
       function createTable(dir, exp, audio, script, idx = 1) {
         html =
           '<table class="table table-responsive align-content-center" style="background-color: white; border-radius: 20px">';
-        html += '<thead><tr><th colspan="5" style="width: 40%">';
+        html += '<thead style="width: 100%"><tr><th colspan="4">';
         html += '<div class="text-left">Script : <i>';
         html += script["script"];
-        html += "</i></div></th></tr></thead><tbody><tr>";
+        html += "</i></div></th></tr></thead><tbody>";
         for (var key in exp) {
-          if (idx % 3 == 0) {
-            html += "<tr>";
+          if (idx % 4 == 0) {
+            html += '<tr style="width: 100%">';
           }
-          html += '<td style="vertical-align: top;"><p></p>';
+          html += '<td style="width: 20%">';
           html += key;
           // html +="<p><em>ASR: "
           // html +=script[exp[key]]
@@ -59,9 +59,60 @@
           html += f;
           html += ' type="audio/wav" /></audio></div></td>';
           idx += 1;
-          if (idx % 3 == 0) {
-            html += "</tr>";
+          if (idx % 4 == 0) {
+            html += "</tr><tr>";
           }
+        }
+        html += "</tr></tbody></table>";
+        return html;
+      }
+      function createTableEmotion(
+        dir,
+        exp_gt,
+        audio_gt,
+        emotion_gt,
+        exp,
+        audio,
+        script,
+        idx = 1
+      ) {
+        html =
+          '<table class="table table-responsive align-content-center" style="background-color: white; border-radius: 20px">';
+        html += '<thead><tr><th colspan="4">';
+        html += '<div class="text-left" >Script : <i>';
+        html += script;
+        html += "</i></div></th></tr></thead><tbody><tr>";
+        // html += emotion_gt;
+        // html += "</td>";
+        for (var key in exp_gt) {
+          html += "<td>";
+          html += key;
+          html +=
+            '<div class="text-center"><audio controls="controls"><source src=';
+          f = dir + "/" + exp_gt[key] + "/" + audio_gt + ".wav";
+          html += f;
+          html += ' type="audio/wav" /></audio></div></td>';
+        }
+        html += "</tr>";
+
+        for (var key in exp) {
+          html += '<th colspan="4">';
+          html += key;
+          html += "</th>";
+
+          html += "<tr>";
+
+          for (var a in audio) {
+            html += "<td>";
+            html += a;
+            html +=
+              '<div class="text-center"><audio controls="controls"><source src=';
+            f = dir + "/" + exp[key] + "/" + audio[a] + ".wav";
+            html += f;
+            html += ' type="audio/wav" /></audio></div></td>';
+            idx += 1;
+          }
+          html += "</tr>";
         }
         html += "</tr></tbody></table>";
         return html;
@@ -91,36 +142,36 @@
               <a
                 class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
                 href="#abstract"
-                >Abstact</a
-              >
+                >Abstact<br />Study
+              </a>
             </li>
             <li class="nav-item mx-0 mx-lg-1">
               <a
                 class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="#mc"
+                href="#comparativemodel"
                 >Comparative<br />Model</a
               >
             </li>
             <li class="nav-item mx-0 mx-lg-1">
               <a
                 class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="#pg"
-                >Ablation<br />PG</a
-              >
+                href="#ablation"
+                >Ablation<br />Study
+              </a>
             </li>
             <li class="nav-item mx-0 mx-lg-1">
               <a
                 class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="#pcd"
-                >Ablation<br />PCD</a
-              >
+                href="#input_feature"
+                >Compare<br />Input features
+              </a>
             </li>
             <li class="nav-item mx-0 mx-lg-1">
               <a
                 class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="#pitch"
-                >Ablation<br />Pitch&Energy</a
-              >
+                href="#zeroshot"
+                >Zero-Shot<br />Setting
+              </a>
             </li>
           </ul>
         </div>
@@ -192,74 +243,96 @@
       </div>
     </section>
 
-    <section class="page-section bg-info text-white mb-0" id="mc">
+    <section class="page-section bg-info text-white mb-0" id="comparativemodel">
       <div class="container">
         <!-- About Section Heading-->
         <div class="text-center">
           <h2 class="page-section-heading d-inline-block text-white">
             Comparative Model
           </h2>
+          <div class="text-center">
+            <br />
+            <img width="100%" src="./table2.png" />
+          </div>
         </div>
-        <div class="text-center" style="text-align: center">
-          <br />
-          <img src="./table1.png" width="100%" />
-          <br />
-          <img src="./table2.png" width="100%" />
-        </div>
+        <div class="text-center" style="text-align: center"></div>
         <!-- Icon Divider-->
         <div class="divider-custom divider-light">
           <div class="divider-custom"></div>
         </div>
 
         <div class="row">
-          <div id="div2" class="col-lg-auto ml-auto">
+          <div id="div1" class="col-lg-auto ml-auto">
             <script>
-              dir = "./wavs/audio";
+              dir = "./wavs/comparison_models";
+              exp_gt = {
+                "Source (Neutral)": "gt",
+                // Vocoded: "gt_vocoded",
+              };
               exp = {
-                GT: "gt",
-                Vocoded: "gt_vocoded",
-                "FastSpeech 2": "fs2",
-                ProsoSpeech: "prs",
-                DiffProsody: "dp",
+                "StarGAN-EVC [1]": "stargan_evc",
+                "Seq2seq-EVC [2]": "seq2seq_evc",
+                "Emovox [3]": "emovox",
+                "Mixed Emotions [4]": "mixed_emotions",
+                "Textless-EVC [5]": "textless_evc",
+                "DurFlex-EVC": "durflex_evc",
               };
               audios = {
-                p362_005: {
-                  script:
-                    "(VCTK) She can scoop these things into three red bags, and we will go meet her Wednesday at the train station.",
+                "0015_000048": {
+                  script: "You are not a runaway , who are you?",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0015_000048_Angry",
+                    Happy: "0015_000048_Happy",
+                    Sad: "0015_000048_Sad",
+                    Surprise: "0015_000048_Surprise",
+                  },
                 },
-                p278_016: {
-                  script:
-                    "(VCTK) The Norsemen considered the rainbow as a bridge over which the gods passed from earth to their home in the sky. ",
+                "0013_000039": {
+                  script: "Our thanks to gods oath.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0013_000039_Angry",
+                    Happy: "0013_000039_Happy",
+                    Sad: "0013_000039_Sad",
+                    Surprise: "0013_000039_Surprise",
+                  },
                 },
-                p293_015: {
-                  script:
-                    "(VCTK) The Greeks used to imagine that it was a sign from the gods to foretell war or heavy rain.",
+                "0017_000044": {
+                  script: "Take courage all isnt lost yet.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0017_000044_Angry",
+                    Happy: "0017_000044_Happy",
+                    Sad: "0017_000044_Sad",
+                    Surprise: "0017_000044_Surprise",
+                  },
                 },
-                p237_018: {
-                  script:
-                    "(VCTK) Aristotle thought that the rainbow was caused by the reflection of the sun's rays by the rain.",
-                },
-                LB1320_122612_000006_000004: {
-                  script:
-                    "(LibriTTS) At last the scout spoke in English, and at once explained the embarrassment of their situation.",
-                },
-                LB1335_27593_000006_000004: {
-                  script:
-                    "(LibriTTS) Add three glasses of sherry and madeira and allow it to boil once, when it is ready to serve.",
-                },
-                LB1509_143477_000076_000001: {
-                  script:
-                    "(LibriTTS) She's going to try to get Eugenio to talk to him.",
-                },
-                LB2294_169656_000006_000000: {
-                  script:
-                    "(LibriTTS) As far back as the sixteenth century the Spanish forts at Alhucemasnot to mention other placeswere established for the purpose of repressing piracy in its vicinity.",
+                "0020_000021": {
+                  script: "As rich as peters son in law!",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0020_000021_Angry",
+                    Happy: "0020_000021_Happy",
+                    Sad: "0020_000021_Sad",
+                    Surprise: "0020_000021_Surprise",
+                  },
                 },
               };
               for (var audio in audios) {
-                div = document.getElementById("div2");
-                script = audios[audio];
-                html = createTable(dir, exp, audio, script);
+                div = document.getElementById("div1");
+                script = audios[audio]["script"];
+                emotion = audios[audio]["emotion"];
+                converted = audios[audio]["converted"];
+                html = createTableEmotion(
+                  dir,
+                  exp_gt,
+                  audio,
+                  emotion,
+                  exp,
+                  converted,
+                  script
+                );
                 // console.log(html)
                 div.insertAdjacentHTML("afterend", html);
               }
@@ -268,19 +341,141 @@
         </div>
       </div>
     </section>
-    <section class="page-section bg-primary text-white mb-0" id="pg">
+
+    <section class="page-section bg-primary text-white mb-0" id="ablation">
       <div class="container">
         <!-- About Section Heading-->
         <div class="text-center">
           <h2 class="page-section-heading d-inline-block text-white">
-            Ablation
+            Ablation Study
           </h2>
-          <br />
-          <h3 class="d-inline-block text-white">Prosody Generator</h3>
+          <div
+            class="rounded bg-white"
+            style="padding: 15px; color: black; text-align: left"
+          >
+            <b>Durflex-EVC</b>: proposed model <br />
+            <b>Durflex-EVC (w/ DDP)</b>: using deterministic duration predictor
+            (DDP) instead of stochastic duration predictor <br />
+            <b>Durflex-EVC (w/ FFT)</b>: using feed-forward transformer
+            (FFT)-based decoder instead of diffusion model
+            <br />
+            <b>Durflex-EVC (w/o SAE)</b>: without style autoencoder (SAE)<br />
+            <b>DurFlex-EVC (w/o unit loss)</b>: without unit loss<br />
+            <b>Durflex-EVC (w/o UA)</b>: without unit aligner (UA)<br />
+            <b>DurFlex-EVC (w/o UA and SAE)</b>: without unit aligner and Style
+            autoencoder (SAE)
+          </div>
         </div>
-        <div class="text-center" style="text-align: center">
-          <img src="./table3.png" width="100%" />
+        <div class="text-center" style="text-align: center"></div>
+
+        <!-- Icon Divider-->
+        <div class="divider-custom divider-light">
+          <div class="divider-custom"></div>
         </div>
+
+        <div class="row">
+          <div id="div3" class="col-lg-auto ml-auto">
+            <script>
+              dir = "./wavs/ablation";
+              exp_gt = {
+                "Source (Neutral)": "gt",
+                // Vocoded: "gt_vocoded",
+              };
+              exp = {
+                "Durflex-EVC": "durflex",
+                "Durflex-EVC (w/ DDP)": "durflex_ddp",
+                "Durflex-EVC (w/ FFT)": "durflex_fft",
+                "Durflex-EVC (w/o SAE)": "durflex_wo_sae",
+                "DurFlex-EVC (w/o unit loss)": "durflex_wo_unit_loss",
+                "Durflex-EVC (w/o UA)": "durflex_wo_ua",
+                "DurFlex-EVC (w/o UA and SAE)": "durflex_wo_ua_sae",
+              };
+              audios = {
+                "0012_000046": {
+                  script: "They'd never know id regular ran away.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0012_000046_Angry",
+                    Happy: "0012_000046_Happy",
+                    Sad: "0012_000046_Sad",
+                    Surprise: "0012_000046_Surprise",
+                  },
+                },
+                "0014_000026": {
+                  script: "Let's make the noise a snake.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0014_000026_Angry",
+                    Happy: "0014_000026_Happy",
+                    Sad: "0014_000026_Sad",
+                    Surprise: "0014_000026_Surprise",
+                  },
+                },
+                "0016_000033": {
+                  script: "This used to be jerrys occupation.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0016_000033_Angry",
+                    Happy: "0016_000033_Happy",
+                    Sad: "0016_000033_Sad",
+                    Surprise: "0016_000033_Surprise",
+                  },
+                },
+                "0019_000049": {
+                  script: "As rich as peters son in law!",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0019_000049_Angry",
+                    Happy: "0019_000049_Happy",
+                    Sad: "0019_000049_Sad",
+                    Surprise: "0019_000049_Surprise",
+                  },
+                },
+              };
+              for (var audio in audios) {
+                div = document.getElementById("div3");
+                script = audios[audio]["script"];
+                emotion = audios[audio]["emotion"];
+                converted = audios[audio]["converted"];
+                html = createTableEmotion(
+                  dir,
+                  exp_gt,
+                  audio,
+                  emotion,
+                  exp,
+                  converted,
+                  script
+                );
+                // console.log(html)
+                div.insertAdjacentHTML("afterend", html);
+              }
+            </script>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section bg-info text-white mb-0" id="input_feature">
+      <div class="container">
+        <!-- About Section Heading-->
+        <div class="text-center">
+          <h2 class="page-section-heading d-inline-block text-white">
+            Comparison of results based on input features
+          </h2>
+          <div
+            class="rounded bg-white"
+            style="padding: 15px; color: black; text-align: left"
+          >
+            <b>Durflex-EVC (w/ Mel-spec.)</b>: using Mel-spectrogram<br />
+            <b>Durflex-EVC (w/ linear spec.)</b>: using linear spectrogram<br />
+            <b>Durflex-EVC (w/ wav2vec 2.0)</b>: using wav2vec 2.0 [6]
+            representations
+            <br />
+            <b>Durflex-EVC (w/o wavLM)</b>: using wavLM [7] representations<br />
+            <b>DurFlex-EVC (w/o HuBERT)</b>: using HuBERT [8] representations<br />
+          </div>
+        </div>
+        <div class="text-center" style="text-align: center"></div>
 
         <!-- Icon Divider-->
         <div class="divider-custom divider-light">
@@ -290,36 +485,75 @@
         <div class="row">
           <div id="div4" class="col-lg-auto ml-auto">
             <script>
-              dir = "./wavs/pg";
+              dir = "./wavs/input_feature";
+              exp_gt = {
+                "Source (Neutral)": "gt",
+                // Vocoded: "gt_vocoded",
+              };
               exp = {
-                GT: "gt",
-                Vocoded: "gt_vocoded",
-                AR: "ar",
-                DDPM: "ddpm",
-                DDGAN: "ddgan",
+                "Durflex-EVC (w/ Mel-spec.)": "mel",
+                "Durflex-EVC (w/ linear spec.)": "linear",
+                "DurFlex-EVC (w/ wav2vec 2.0)": "wav2vec",
+                "Durflex-EVC (w/ wavLM)": "wavlm",
+                "Durflex-EVC (w/ HuBERT)": "hubert",
               };
               audios = {
-                p300_018: {
+                "0011_000040": {
                   script:
-                    "Aristotle thought that the rainbow was caused by the reflection of the sun's rays by the rain.",
+                    "In which fox loses a tail and its elder sister finds one.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0011_000040_Angry",
+                    Happy: "0011_000040_Happy",
+                    Sad: "0011_000040_Sad",
+                    Surprise: "0011_000040_Surprise",
+                  },
                 },
-                p301_013: {
-                  script:
-                    "Some have accepted it as a miracle without physical explanation.",
+                "0016_000033": {
+                  script: "This used to be jerrys occupation.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0016_000033_Angry",
+                    Happy: "0016_000033_Happy",
+                    Sad: "0016_000033_Sad",
+                    Surprise: "0016_000033_Surprise",
+                  },
                 },
-                p302_017: {
-                  script:
-                    "Others have tried to explain the phenomenon physically.",
+                "0018_000036": {
+                  script: "How I hate this foul pool!",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0018_000036_Angry",
+                    Happy: "0018_000036_Happy",
+                    Sad: "0018_000036_Sad",
+                    Surprise: "0018_000036_Surprise",
+                  },
                 },
-                p330_011: {
-                  script:
-                    "When a man looks for something beyond his reach, his friends say he is looking for the pot of gold at the end of the rainbow.",
+                "0020_000037": {
+                  script: "I think it'll encourage me.",
+                  emotion: "Neutral",
+                  converted: {
+                    Angry: "0020_000037_Angry",
+                    Happy: "0020_000037_Happy",
+                    Sad: "0020_000037_Sad",
+                    Surprise: "0020_000037_Surprise",
+                  },
                 },
               };
               for (var audio in audios) {
                 div = document.getElementById("div4");
-                script = audios[audio];
-                html = createTable(dir, exp, audio, script);
+                script = audios[audio]["script"];
+                emotion = audios[audio]["emotion"];
+                converted = audios[audio]["converted"];
+                html = createTableEmotion(
+                  dir,
+                  exp_gt,
+                  audio,
+                  emotion,
+                  exp,
+                  converted,
+                  script
+                );
                 // console.log(html)
                 div.insertAdjacentHTML("afterend", html);
               }
@@ -328,116 +562,87 @@
         </div>
       </div>
     </section>
-
-    <section class="page-section bg-info text-white mb-0" id="pcd">
+    <section class="page-section bg-primary text-white mb-0" id="zeroshot">
       <div class="container">
         <!-- About Section Heading-->
         <div class="text-center">
           <h2 class="page-section-heading d-inline-block text-white">
-            Ablation
+            Speaker encoder setting for zero-shot emotion conversion
           </h2>
+          <div class="text-center">
+            <br />
+            <img src="./fig2.png" />
+          </div>
           <br />
-          <h3 class="d-inline-block text-white">
-            Prosody Conditional Discriminator
-          </h3>
         </div>
-        <div class="text-center" style="text-align: center">
-          <br />
-          <img src="./table4.png" />
-        </div>
+        <div class="text-center" style="text-align: center"></div>
         <!-- Icon Divider-->
         <div class="divider-custom divider-light">
           <div class="divider-custom"></div>
         </div>
 
         <div class="row">
-          <div id="div3" class="col-lg-auto ml-auto">
+          <div id="div5" class="col-lg-auto ml-auto">
             <script>
-              dir = "./wavs/pcd";
+              dir = "./wavs/zero_shot/unseen";
               exp = {
-                GT: "gt",
-                Vocoded: "gt_vocoded",
-                ProsoSpeech: "prs",
-                "DiffProsody (w/o PCD)": "dp_wo_pcd",
-                DiffProsody: "dp",
+                Source: "gt",
+                Angry: "Angry",
+                Happy: "Happy",
+                Sad: "Sad",
+                Surprise: "Surprise",
               };
               audios = {
+                p310_096: {
+                  script: "(Unseen) Now he will have to start again.",
+                },
+                p302_173: {
+                  script:
+                    "(Unseen) Now, though, he is back playing superbly for Blackburn.",
+                },
                 p225_001: {
-                  script: "Please call Stella.",
+                  script: "(Unseen) Please call Stella.",
                 },
-                p227_004: {
+                p298_092: {
                   script:
-                    "We also need a small plastic snake and a big toy frog for the kids.",
-                },
-                p228_002: {
-                  script:
-                    "Ask her to bring these things with her from the store.",
-                },
-                p243_003: {
-                  script:
-                    "Six spoons of fresh snow peas, five thick slabs of blue cheese, and maybe a snack for her brother Bob.",
+                    "(Unseen) These things are important for clubs like ourselves.",
                 },
               };
               for (var audio in audios) {
-                div = document.getElementById("div3");
+                div = document.getElementById("div5");
                 script = audios[audio];
-                html = createTable(dir, exp, audio, script);
+                html = createTable(dir, exp, audio, script, (idx = 3));
                 // console.log(html)
                 div.insertAdjacentHTML("afterend", html);
               }
-            </script>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page-section bg-primary text-white mb-0" id="pitch">
-      <div class="container">
-        <!-- About Section Heading-->
-        <div class="text-center">
-          <h2 class="page-section-heading d-inline-block text-white">
-            Ablation
-          </h2>
-          <br />
-          <h3 class="d-inline-block text-white">Pitch&Energy</h3>
-        </div>
-        <!-- Icon Divider-->
-        <div class="divider-custom divider-light">
-          <div class="divider-custom"></div>
-        </div>
-
-        <div class="row">
-          <div id="div1" class="col-lg-auto ml-auto">
-            <script>
-              dir = "./wavs/pitch";
+              dir = "./wavs/zero_shot/seen";
               exp = {
-                GT: "gt",
-                Vocoded: "gt_vocoded",
-                "DiffProsody (pitch & energy)": "dp_pitch",
-                DiffProsody: "dp",
+                "Source (Neutral)": "gt",
+                Angry: "Angry",
+                Happy: "Happy",
+                Sad: "Sad",
+                Surprise: "Surprise",
               };
               audios = {
-                p225_007: {
+                "0019_000040": {
                   script:
-                    "The rainbow is a division of white light into many beautiful colors.",
+                    "(Seen) In which fox loses a tail and its elder sister finds one.",
                 },
-                p298_017: {
-                  script:
-                    "Others have tried to explain the phenomenon physically.",
+                "0013_000027": {
+                  script: "(Seen) Monster made a deep bow .",
                 },
-                p304_016: {
-                  script:
-                    "The Norsemen considered the rainbow as a bridge over which the gods passed from earth to their home in the sky.",
+                "0018_000047": {
+                  script: "(Seen) Please excuse me .",
                 },
-                p307_012: {
-                  script:
-                    "Throughout the centuries people have explained the rainbow in various ways.",
+
+                "0014_000033": {
+                  script: "(Seen) This used to be jerrys occupation.",
                 },
               };
               for (var audio in audios) {
-                div = document.getElementById("div1");
+                div = document.getElementById("div5");
                 script = audios[audio];
-                html = createTable(dir, exp, audio, script, 1);
+                html = createTable(dir, exp, audio, script, (idx = 3));
                 // console.log(html)
                 div.insertAdjacentHTML("afterend", html);
               }
@@ -446,7 +651,71 @@
         </div>
       </div>
     </section>
-
+    <section class="page-section portfolio" id="ref">
+      <div class="container">
+        <!-- Portfolio Section Heading-->
+        <div class="text-center">
+          <h2 class="page-section-heading text-secondary mb-0 d-inline-block">
+            Reference
+          </h2>
+        </div>
+        <!-- Icon Divider-->
+        <div class="divider-custom">
+          <div class="divider-custom"></div>
+        </div>
+        <!-- Portfolio Grid Items-->
+        <div class="row justify-content-center">
+          <div class="col-lg-12 ml-auto">
+            <p class="legend">
+              [1] G. Rizos, A. Baird, M. Elliott, and B. Schuller, “Stargan for
+              Emotional Speech Conversion: Validated by Data Augmentation of
+              End-To-End Emotion Recognition,” in IEEE Int. Conf. Acoust.,
+              Speech, Signal Process., 2020, pp. 3502-3506.
+              <br /><br />
+              [2] K. Zhou, B. Sisman, and H. Li, “Limited Data Emotional Voice
+              Conversion Leveraging Text-to-Speech: Two-Stage
+              Sequence-to-Sequence Training,” in Proc. Interspeech, 2021, pp.
+              811-815.
+              <br /><br />
+              [3] K. Zhou, B. Sisman, R. Rana, B. W. Schuller, and H. Li,
+              “Emotion Intensity and its Control for Emotional Voice
+              Conversion,” IEEE Trans. Affect. Comput., vol. 14, no. 1, pp.
+              31-48, 2023.
+              <br /><br />
+              [4] K. Zhou, B. Sisman, R. Rana, B. W. Schuller, and H. Li,
+              “Speech Synthesis with Mixed Emotions,” IEEE Trans. Affect.
+              Comput., pp. 1-16, 2022.
+              <br /><br />
+              [5] F. Kreuk, A. Polyak, J. Copet, E. Kharitonov, T. A. Nguyen, M.
+              Riviere, W.-N. Hsu, A. Mohamed, E. Dupoux, and ` Y. Adi, “Textless
+              Speech Emotion Conversion using Discrete & Decomposed
+              Representations,” in Proceedings of the 2022 Conference on
+              Empirical Methods in Natural Language Processing. Abu Dhabi,
+              United Arab Emirates: Association for Computational Linguistics,
+              Dec. 2022, pp. 11 200-11 214.
+              <br /><br />
+              [6] A. Baevski, Y. Zhou, A. Mohamed, and M. Auli, “wav2vec 2.0: A
+              Framework for Self-Supervised Learning of Speech Representations,”
+              in Proc. Adv. Neural Inf. Process. Syst., vol. 33. Curran
+              Associates, Inc., 2020, pp. 12 449-12 460.
+              <br /><br />
+              [7] S. Chen, C. Wang, Z. Chen, Y. Wu, S. Liu, Z. Chen, J. Li, N.
+              Kanda, T. Yoshioka, X. Xiao, J. Wu, L. Zhou, S. Ren, Y. Qian, Y.
+              Qian, J. Wu, M. Zeng, X. Yu, and F. Wei, “WavLM: Large-Scale
+              Self-Supervised Pre-Training for Full Stack Speech Processing,”
+              IEEE J. Sel. Top. Signal Process., vol. 16, no. 6, pp. 1505-1518,
+              2022.
+              <br /><br />
+              [8] W.-N. Hsu, B. Bolte, Y.-H. H. Tsai, K. Lakhotia, R.
+              Salakhutdinov, and A. Mohamed, “HuBERT: Self-Supervised Speech
+              Representation Learning by Masked Prediction of Hidden Units,”
+              IEEE/ACM Trans. Audio, Speech, Lang. Process., vol. 29, pp.
+              3451-3460, 2021.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="scroll-to-top d-lg-none position-fixed">
       <a
         class="js-scroll-trigger d-block text-center text-white rounded"
