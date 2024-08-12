@@ -212,25 +212,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-12 ml-auto">
             <p class="legend lead">
-              Emotional voice conversion (EVC) seeks to modify the emotional
-              tone of a speaker’s voice while preserving the original linguistic
-              content and the speaker’s unique vocal characteristics. Recent
-              advancements in EVC have involved the simultaneous modeling of
-              pitch and duration, utilizing the potential of
-              sequence-to-sequence (seq2seq) models. To enhance reliability and
-              efficiency in conversion, this study shifts focus towards parallel
-              speech generation. We introduce Duration-Flexible EVC
-              (DurFlex-EVC), which integrates a style autoencoder and unit
-              aligner. Traditional models, while incorporating self-supervised
-              learning (SSL) representations that contain both linguistic and
-              paralinguistic information, have neglected this dual nature,
-              leading to reduced controllability. Addressing this issue, we
-              implement cross-attention to synchronize these representations
-              with various emotions. Additionally, a style autoencoder is
-              developed for the disentanglement and manipulation of style
-              elements. The efficacy of our approach is validated through both
-              subjective and objective evaluations, establishing its superiority
-              over existing models in the field.
+              Emotional voice conversion involves modifying the pitch, spectral envelope, and other acoustic characteristics of speech to match a desired emotional state while maintaining the speaker's identity. Recent advances in EVC involve simultaneously modeling pitch and duration by exploiting the potential of sequence-to-sequence models. In this study, we focus on parallel speech generation to increase the reliability and efficiency of conversion. We introduce a duration-flexible EVC (DurFlex-EVC) that integrates a style autoencoder and a unit aligner. The previous variable-duration parallel generation model required text-to-speech alignment. We consider self-supervised model representation and discrete speech units to be the core of our parallel generation. The style autoencoder promotes content style disentanglement by separating the source style of the input features and applying them with the target style. The unit aligner encodes unit-level features by modeling emotional context. Furthermore, we enhance the style of the features with a hierarchical stylize encoder and generate high-quality Mel-spectrograms with a diffusion-based generator. The effectiveness of the approach has been validated through subjective and objective evaluations and has been demonstrated to be superior to baseline models.
             </p>
             <br />
             <br />
@@ -250,10 +232,10 @@
           <h2 class="page-section-heading d-inline-block text-white">
             Comparative Model
           </h2>
-          <div class="text-center">
+          <!-- <div class="text-center">
             <br />
-            <img width="100%" src="./table2.png" />
-          </div>
+            <img width="70%" src="./table1.png" />
+          </div> -->
         </div>
         <div class="text-center" style="text-align: center"></div>
         <!-- Icon Divider-->
@@ -349,22 +331,29 @@
           <h2 class="page-section-heading d-inline-block text-white">
             Ablation Study
           </h2>
+          
           <div
             class="rounded bg-white"
             style="padding: 15px; color: black; text-align: left"
           >
             <b>Durflex-EVC</b>: proposed model <br />
+            <b>Durflex-EVC (w/o SAE)</b>: without style autoencoder (SAE)<br />
+            <b>Durflex-EVC (w/o UA)</b>: without unit aligner (UA)<br />
+            <b>Durflex-EVC (w/o HSE)</b>: without hierarchical stylize encoder (HSE)<br />
             <b>Durflex-EVC (w/ DDP)</b>: using deterministic duration predictor
             (DDP) instead of stochastic duration predictor <br />
             <b>Durflex-EVC (w/ FFT)</b>: using feed-forward transformer
-            (FFT)-based decoder instead of diffusion model
+            (FFT)-based decoder instead of diffusion model<br />
+
+            <b>Durflex-EVC (w/ adv)</b>: using adversarial training for style disentanglement instead of SAE<br />
+            <b>Durflex-EVC (w/ unit2mel)</b>: generating Mel-spectrogram from unit<br />
+            <b>Durflex-EVC (w/ unti2wav)</b>: generating waveform from unit
             <br />
-            <b>Durflex-EVC (w/o SAE)</b>: without style autoencoder (SAE)<br />
-            <b>DurFlex-EVC (w/o unit loss)</b>: without unit loss<br />
-            <b>Durflex-EVC (w/o UA)</b>: without unit aligner (UA)<br />
-            <b>DurFlex-EVC (w/o UA and SAE)</b>: without unit aligner and Style
-            autoencoder (SAE)
           </div>
+          <!-- <div class="text-center">
+            <br />
+            <img width="70%" src="./table2.png" />
+          </div>           -->
         </div>
         <div class="text-center" style="text-align: center"></div>
 
@@ -383,12 +372,14 @@
               };
               exp = {
                 "Durflex-EVC": "durflex",
-                "Durflex-EVC (w/ DDP)": "durflex_ddp",
-                "Durflex-EVC (w/ FFT)": "durflex_fft",
                 "Durflex-EVC (w/o SAE)": "durflex_wo_sae",
-                "DurFlex-EVC (w/o unit loss)": "durflex_wo_unit_loss",
                 "Durflex-EVC (w/o UA)": "durflex_wo_ua",
-                "DurFlex-EVC (w/o UA and SAE)": "durflex_wo_ua_sae",
+                "Durflex-EVC (w/o HSE)": "durflex_wo_hse",
+                "Durflex-EVC (w/ DDP)": "durflex_w_ddp",
+                "Durflex-EVC (w/ FFT)": "durflex_w_fft",
+                "Durflex-EVC (w/ adv)": "durflex_w_adv",
+                "Durflex-EVC (w/ unit2mel)": "durflex_w_unit2mel",
+                "Durflex-EVC (w/ unti2wav)": "durflex_w_unit2wav",
               };
               audios = {
                 "0012_000046": {
@@ -474,6 +465,10 @@
             <b>Durflex-EVC (w/o wavLM)</b>: using wavLM [7] representations<br />
             <b>DurFlex-EVC (w/o HuBERT)</b>: using HuBERT [8] representations<br />
           </div>
+          <!-- <div class="text-center">
+            <br />
+            <img width="70%" src="./table3.png" />
+          </div> -->
         </div>
         <div class="text-center" style="text-align: center"></div>
 
@@ -569,10 +564,10 @@
           <h2 class="page-section-heading d-inline-block text-white">
             Speaker encoder setting for zero-shot emotion conversion
           </h2>
-          <div class="text-center">
+          <!-- <div class="text-center">
             <br />
-            <img src="./fig2.png" />
-          </div>
+            <img src="./fig2.jpg" style="width: 60%"/>
+          </div> -->
           <br />
         </div>
         <div class="text-center" style="text-align: center"></div>
