@@ -183,8 +183,7 @@
       <div class="container d-flex align-items-center flex-column">
         <!-- Masthead Heading-->
         <h1 class="masthead-heading mb-0">
-          DurFlex-EVC: Duration-Flexible Emotional Voice Conversion with
-          Parallel Generation
+          DurFlex-EVC: Duration-Flexible Emotional Voice Conversion Leveraging Discrete Representations without Text Alignment
         </h1>
         <!-- Masthead Subheading-->
         <p
@@ -212,7 +211,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-12 ml-auto">
             <p class="legend lead">
-              Emotional voice conversion involves modifying the pitch, spectral envelope, and other acoustic characteristics of speech to match a desired emotional state while maintaining the speaker's identity. Recent advances in EVC involve simultaneously modeling pitch and duration by exploiting the potential of sequence-to-sequence models. In this study, we focus on parallel speech generation to increase the reliability and efficiency of conversion. We introduce a duration-flexible EVC (DurFlex-EVC) that integrates a style autoencoder and a unit aligner. The previous variable-duration parallel generation model required text-to-speech alignment. We consider self-supervised model representation and discrete speech units to be the core of our parallel generation. The style autoencoder promotes content style disentanglement by separating the source style of the input features and applying them with the target style. The unit aligner encodes unit-level features by modeling emotional context. Furthermore, we enhance the style of the features with a hierarchical stylize encoder and generate high-quality Mel-spectrograms with a diffusion-based generator. The effectiveness of the approach has been validated through subjective and objective evaluations and has been demonstrated to be superior to baseline models.
+              Emotional voice conversion (EVC) involves modifying various acoustic characteristics, such as pitch and spectral envelope, to match a desired emotional state while preserving the speaker's identity. Existing EVC methods often rely on text transcriptions or time-alignment information and struggle to handle varying speech durations effectively. In this paper, we propose DurFlex-EVC, a duration-flexible EVC framework that operates without the need for text or alignment information. We introduce a unit aligner that models contextual information by aligning speech with discrete units representing content, eliminating the need for text or speech-text alignment. Additionally, we design a style autoencoder that effectively disentangles content and emotional style, allowing precise manipulation of the emotional characteristics of the speech. We further enhance emotional expressiveness through a hierarchical stylize encoder that applies the target emotional style at multiple hierarchical levels, refining the stylization process to improve the naturalness and expressiveness of the converted speech. Experimental results from subjective and objective evaluations demonstrate that our approach outperforms baseline models, effectively handling duration variability and enhancing emotional expressiveness in the converted speech.
             </p>
             <br />
             <br />
